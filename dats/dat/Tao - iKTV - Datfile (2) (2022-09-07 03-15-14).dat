@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!DOCTYPE datafile PUBLIC "-//Logiqx//DTD ROM Management Datafile//EN" "http://www.logiqx.com/Dats/datafile.dtd">
+<datafile>
+	<header>
+		<name>Tao - iKTV</name>
+		<description>Tao - iKTV - Discs (2) (2022-09-07 03-15-14)</description>
+		<version>2022-09-07 03-15-14</version>
+		<date>2022-09-07 03-15-14</date>
+		<author>redump.org</author>
+		<homepage>redump.org</homepage>
+		<url>http://redump.org/</url>
+	</header>
+	<game name="Club iKTV 02 (USA)">
+		<category>Video</category>
+		<description>Club iKTV 02 (USA)</description>
+		<rom name="Club iKTV 02 (USA).cue" size="1053" crc="f506f89f" md5="db36602c746cac961318b14a15f3bb92" sha1="909404e0937c5b6356f69efc8b47c1e95eac00e8"/>
+		<rom name="Club iKTV 02 (USA) (Track 1).bin" size="1411200" crc="0e9bd100" md5="50af565577e4f23c18e6c67a83660a26" sha1="15d4f1c122f5747add0b0d0aa8ed3dad56b65fa1"/>
+		<rom name="Club iKTV 02 (USA) (Track 2).bin" size="9694944" crc="0d6a04e7" md5="107219708c93a42ad99b203c16f07b79" sha1="9e0dbe5dfce5462aeb0a499c09e3fa00aa75ff5c"/>
+		<rom name="Club iKTV 02 (USA) (Track 3).bin" size="34369776" crc="2d3b689d" md5="9ff7d6185c88f72b27ca190de8d908b1" sha1="2e5d94c468598f5e7f22e44a852350e7087f80b7"/>
+		<rom name="Club iKTV 02 (USA) (Track 4).bin" size="38017728" crc="8984850b" md5="375217bb73bc06a9f54c4c95b30f1713" sha1="7f1b0c33f2a0f404d24c8fa4dd7e18071cc17cae"/>
+		<rom name="Club iKTV 02 (USA) (Track 5).bin" size="40174512" crc="0b30a884" md5="88410011f8dc5c1307f313efa51d3007" sha1="618a3e927e743ac99776523348fafa33dd49be15"/>
+		<rom name="Club iKTV 02 (USA) (Track 6).bin" size="36305472" crc="43d9a11f" md5="f87b11bcf94ebd0e5ebe5bb77eb9e9ae" sha1="9069bf6d04ffc2a91415f05bd50c429b0dd29d6a"/>
+		<rom name="Club iKTV 02 (USA) (Track 7).bin" size="36872304" crc="323c821b" md5="821f36d114c87ce7d82b6355989d1377" sha1="ebe89922d5b7646020624a4959939935bd8aa4b8"/>
+		<rom name="Club iKTV 02 (USA) (Track 8).bin" size="43944768" crc="57cf43d0" md5="ec3bd3c4dccfae47bbe93645f96d3df7" sha1="228e1be1527d6b6f56adbe7bb1b7b050c01581db"/>
+		<rom name="Club iKTV 02 (USA) (Track 9).bin" size="7293552" crc="36fe3531" md5="9a3d116b73c11846fbabae228e863416" sha1="c5705048db440558a6f70d6865702cc1343b4063"/>
+	</game>
+	<game name="Club iKTV 01 (USA)">
+		<category>Video</category>
+		<description>Club iKTV 01 (USA)</description>
+		<rom name="Club iKTV 01 (USA).cue" size="1053" crc="248be62f" md5="390735731349ba8a52fb92b12311e1e9" sha1="b0039aa4d756bb6e7823844fe61a2d92734bc6ef"/>
+		<rom name="Club iKTV 01 (USA) (Track 1).bin" size="710304" crc="8e7b7d99" md5="9426cf67be69c351fc41a105102defcb" sha1="b2293422febf5126458e800e0f618c101dd1f9d4"/>
+		<rom name="Club iKTV 01 (USA) (Track 2).bin" size="9078720" crc="290c7a00" md5="0826b6e652dd2d2a3c595f9c2bcafacc" sha1="c7d544e6c07c150aa318e49d8d77b0c8c36baafb"/>
+		<rom name="Club iKTV 01 (USA) (Track 3).bin" size="41395200" crc="d4695277" md5="918dda7ea35468b2f405008ee50e2dae" sha1="84fcbf5cfceea00db886c0e44f8dfd4e9e4a5126"/>
+		<rom name="Club iKTV 01 (USA) (Track 4).bin" size="40376784" crc="e96470b7" md5="d7d986f43ced5765594e3f9c4e1add73" sha1="ff2665fa86e8cb80222714864f5e064b5eb332a6"/>
+		<rom name="Club iKTV 01 (USA) (Track 5).bin" size="39988704" crc="571d5c47" md5="c7f4ca6d2a593a8e1a8287a11745950c" sha1="e6c6e7e20850c0a67a2eba750f0e4893d916cb59"/>
+		<rom name="Club iKTV 01 (USA) (Track 6).bin" size="49408464" crc="01fa3ca8" md5="b9c6d14989c4027128a0a56bf4547c1f" sha1="b09266151efcc8a12c6ba350a6469e87768fac44"/>
+		<rom name="Club iKTV 01 (USA) (Track 7).bin" size="35924448" crc="a96962bf" md5="cde344d30c5d37c2c7403acef1826a0b" sha1="12454ff91e4fc479a2457f697ff1fd88662617c4"/>
+		<rom name="Club iKTV 01 (USA) (Track 8).bin" size="39141984" crc="8dbc90af" md5="e42ffd13277e71ee2ea17398159308f6" sha1="b6064730e4c696bc354ff5cb174247814cb2fade"/>
+		<rom name="Club iKTV 01 (USA) (Track 9).bin" size="7004256" crc="501661d6" md5="53cd1029710e19c3947d908cd7de0e3a" sha1="17d2b14e0bc0508d8fa001c13f584f762ee7d02e"/>
+	</game>
+</datafile>

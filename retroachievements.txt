@@ -1,0 +1,41 @@
+# Arduboy
+# Mega Duck
+# WASM-4
+Amstrad - CPC
+Arcade
+Atari - Atari 2600
+Atari - Atari 7800
+Atari - Atari Jaguar
+Atari - Atari Lynx
+Bandai - WonderSwan
+Coleco - ColecoVision
+Fairchild - Channel F
+GCE - Vectrex
+Magnavox Odyssey 2
+Mattel - Intellivision
+Microsoft - MSX
+NEC - PC Engine
+NEC - PC Engine CD
+NEC - PC-FX
+Nintendo - Game Boy
+Nintendo - Game Boy Advance
+Nintendo - Game Boy Color
+Nintendo - NES
+Nintendo - Nintendo 64
+Nintendo - Nintendo DS
+Nintendo - Pokemon Mini
+Nintendo - SNES
+Nintendo - Virtual Boy
+Panasonic - 3DO Interactive Multiplayer
+SNK - Neo Geo Pocket
+Sega - 32X
+Sega - Dreamcast
+Sega - Game Gear
+Sega - Master System
+Sega - Mega Drive
+Sega - SG-1000
+Sega - Saturn
+Sega - Sega CD
+Sony - PlayStation
+Sony - PlayStation Portable
+Watara - Supervision
