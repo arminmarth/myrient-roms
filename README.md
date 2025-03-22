@@ -1,5 +1,9 @@
 # Myrient ROMs Repository
 
+[![Bash](https://img.shields.io/badge/Bash-5.0%2B-green.svg)](https://www.gnu.org/software/bash/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/arminmarth/myrient-roms/validate-scripts.yml?branch=main&label=tests)](https://github.com/arminmarth/myrient-roms/actions)
+
 A collection of scripts for downloading and managing ROM collections from the Myrient repository.
 
 ## Overview
@@ -9,49 +13,60 @@ This repository contains utilities for:
 2. Downloading ROM collections using wget
 3. Organizing and renaming ROM files
 
+## Directory Structure
+
+- `scripts/` - Contains all shell scripts for downloading and managing ROMs
+  - `scrape.sh` - Scrapes links from the Myrient repository
+  - `wget.sh` - Downloads ROM collections with various options
+  - `rename_files.sh` - Renames files based on checksums
+  - `rsync.sh` - Syncs ROM collections using rsync
+- `data/` - Contains data files and DAT files
+- `docs/` - Documentation files
+- `examples/` - Example usage scenarios
+
 ## Scripts
 
-### scrape.sh
+### scripts/scrape.sh
 
 A utility to scrape links from the Myrient repository website.
 
 ```bash
 # Basic usage
-./scrape.sh
+./scripts/scrape.sh
 
 # Scrape a specific URL
-./scrape.sh https://myrient.erista.me/files/Redump/
+./scripts/scrape.sh https://myrient.erista.me/files/Redump/
 
 # Save results to a file
-./scrape.sh > links.txt
+./scripts/scrape.sh > data/links.txt
 ```
 
-### wget.sh
+### scripts/wget.sh
 
 A comprehensive downloader for Myrient ROM collections with various options.
 
 ```bash
 # Show help
-./wget.sh --help
+./scripts/wget.sh --help
 
 # List all available collections
-./wget.sh --list
+./scripts/wget.sh --list
 
 # Download a specific collection by ID
-./wget.sh --download 31  # Downloads Atari 2600 collection
+./scripts/wget.sh --download 31  # Downloads Atari 2600 collection
 
 # Download to a specific directory
-./wget.sh --output /path/to/roms --download 31
+./scripts/wget.sh --output /path/to/roms --download 31
 
 # Enable all download options
-./wget.sh --all
+./scripts/wget.sh --all
 ```
 
-### rename_files.sh
+### scripts/rename_files.sh
 
 A utility to rename files based on their checksums.
 
-### rsync.sh
+### scripts/rsync.sh
 
 A utility for syncing ROM collections using rsync.
 

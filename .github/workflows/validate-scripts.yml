@@ -1,0 +1,33 @@
+name: Shell Script Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Install shellcheck
+        run: sudo apt-get install -y shellcheck
+        
+      - name: Run shellcheck
+        run: |
+          shellcheck scripts/*.sh
+          
+  test:
+    name: Test Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Test script syntax
+        run: |
+          for script in scripts/*.sh; do
+            bash -n "$script"
+          done
