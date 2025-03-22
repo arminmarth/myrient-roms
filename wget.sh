@@ -1,4 +1,125 @@
-#!/bin/sh
+#!/bin/bash
+#
+# wget.sh - Batch downloader for Myrient ROM collections
+#
+# This script downloads ROM collections from the Myrient repository
+# using wget with optimized settings for reliable downloads.
+#
+# Author: Armin Marth
+# Version: 1.1.0
+# Last Updated: 2025-03-22
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Base URL for downloads
+BASE_URL="https://myrient.erista.me/No-Intro"
+
+# Common wget options
+WGET_OPTIONS="-m -np -c -e robots=off -R \"index.html*\""
+
+# Function to display usage information
+show_help() {
+    echo "Usage: $(basename "$0") [OPTIONS]"
+    echo "Downloads ROM collections from Myrient repository."
+    echo ""
+    echo "Options:"
+    echo "  -h, --help         Show this help message"
+    echo "  -l, --list         List all available collections"
+    echo "  -d, --download ID  Download a specific collection by ID"
+    echo "  -a, --all          Download all collections (uncomment all lines)"
+    echo "  -o, --output DIR   Specify output directory (default: current directory)"
+    echo ""
+    echo "Example:"
+    echo "  $(basename "$0") --download 31  # Download Atari - 2600 collection"
+    echo "  $(basename "$0") --all          # Download all collections"
+}
+
+# Function to uncomment all wget lines
+uncomment_all() {
+    sed -i 's/^# wget/wget/g' "$0"
+    echo "All download lines have been uncommented. Run the script again to start downloads."
+    exit 0
+}
+
+# Function to list all collections with IDs
+list_collections() {
+    echo "Available ROM Collections:"
+    echo "=========================="
+    grep -n "wget.*$BASE_URL" "$0" | sed 's/^/ID: /' | sed 's/:.* https:\/\/myrient.erista.me\/No-Intro\//\t/'
+}
+
+# Function to download a specific collection by line number
+download_collection() {
+    local id=$1
+    local line
+    
+    # Extract the specific wget command
+    line=$(sed -n "${id}p" "$0")
+    
+    # Check if the line contains a wget command
+    if [[ $line == *"wget"* && $line == *"$BASE_URL"* ]]; then
+        # Remove comment if present
+        line=${line#"# "}
+        echo "Executing: $line"
+        eval "$line"
+    else
+        echo "Error: Invalid collection ID: $id"
+        echo "Use --list to see available collections"
+        exit 1
+    fi
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        -l|--list)
+            list_collections
+            exit 0
+            ;;
+        -a|--all)
+            uncomment_all
+            ;;
+        -d|--download)
+            if [[ -z "$2" || "$2" =~ ^- ]]; then
+                echo "Error: --download requires a collection ID"
+                exit 1
+            fi
+            download_collection "$2"
+            exit 0
+            ;;
+        -o|--output)
+            if [[ -z "$2" || "$2" =~ ^- ]]; then
+                echo "Error: --output requires a directory path"
+                exit 1
+            fi
+            OUTPUT_DIR="$2"
+            mkdir -p "$OUTPUT_DIR"
+            cd "$OUTPUT_DIR"
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            show_help
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+# If no arguments provided, show help
+if [[ $# -eq 0 ]]; then
+    show_help
+    exit 0
+fi
+
+# The following lines contain the wget commands for different ROM collections
+# Use the --list option to see all available collections
+# Use the --download option with the ID to download a specific collection
+
 # wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/ACT%20-%20Apricot%20PC%20Xi
 # wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/APF%20-%20Imagination%20Machine
 # wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/APF%20-%20MP-1000
@@ -46,291 +167,3 @@ wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro
 # wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Bandai%20-%20Gundam%20RX-78
 wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Bandai%20-%20WonderSwan
 wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Bandai%20-%20WonderSwan%20Color
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Benesse%20-%20Pocket%20Challenge%20V2
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Benesse%20-%20Pocket%20Challenge%20W
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Bit%20Corporation%20-%20Gamate
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Casio%20-%20Loopy
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Casio%20-%20PV-1000
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Coleco%20-%20ColecoVision
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Amiga
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Amiga%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Commodore%2064
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Commodore%2064%20%28PP%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Commodore%2064%20%28Tapes%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20Plus-4
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Commodore%20-%20VIC-20
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Emerson%20-%20Arcadia%202001
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Entex%20-%20Adventure%20Vision
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Epoch%20-%20Game%20Pocket%20Computer
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Epoch%20-%20Super%20Cassette%20Vision
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fairchild%20-%20Channel%20F
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fujitsu%20-%20FM%20Towns%20%28KryoFlux%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fujitsu%20-%20FM-7%20%28Flux%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fujitsu%20-%20FM-7%20%28Waveform%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fujitsu%20-%20FMR50%20%28Flux%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Fukutake%20Publishing%20-%20StudyBox
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Funtech%20-%20Super%20Acan
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/GCE%20-%20Vectrex
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/GamePark%20-%20GP2X
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/GamePark%20-%20GP32
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Google%20-%20Android%20%28Amazon%20Appstore%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Google%20-%20Android%20%28Misc%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Google%20-%20Android%20%28Samsung%20Galaxy%20Apps%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Hartung%20-%20Game%20Master
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Hitachi%20-%20S1%20%28Waveform%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/IBM%20-%20PC%20and%20Compatibles%20%28Digital%29%20%28Getchu.com%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/IBM%20-%20PC%20and%20Compatibles%20%28Digital%29%20%28Misc%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/IBM%20-%20PC%20and%20Compatibles%20%28Digital%29%20%28Steam%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/IBM%20-%20PC%20and%20Compatibles%20%28Digital%29%20%28itch.io%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Interton%20-%20VC%204000
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Konami%20-%20Picno
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/LeapFrog%20-%20LeapPad
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/LeapFrog%20-%20Leapster%20Learning%20Game%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Luxor%20-%20ABC%20800%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Magnavox%20-%20Odyssey%202
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mattel%20-%20Intellivision
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Microsoft%20-%20MSX
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Microsoft%20-%20MSX2
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Microsoft%20-%20Xbox%20%28Development%20Kit%20Hard%20Drives%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Microsoft%20-%20Xbox%20360%20%28Digital%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Milton-Bradley%20-%20Omni%20%28Waveform%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20J2ME
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20Palm%20OS
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20Palm%20OS%20%28Digital%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20Pocket%20PC
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20Pocket%20PC%20%28Digital%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Mobile%20-%20Symbian
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC%20Engine%20-%20TurboGrafx%2016
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC%20Engine%20SuperGrafx
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-88%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-88%20%28KryoFlux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-98
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-98%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-98%20%28Greaseweazle%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-98%20%28HardDisk%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/NEC%20-%20PC-98%20%28Uncategorized%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nichibutsu%20-%20My%20Vision
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Family%20BASIC%20%28Tapes%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Family%20Computer%20Disk%20System%20%28FDS%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Family%20Computer%20Disk%20System%20%28FDSStickRAW%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Family%20Computer%20Disk%20System%20%28QD%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Family%20Computer%20Network%20System
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20%26%20Watch
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy%20Advance
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy%20Advance%20%28Multiboot%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy%20Advance%20%28Video%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy%20Advance%20%28e-Reader%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Game%20Boy%20Color
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Kiosk%20Video%20Compact%20Flash%20%28CardImage%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Kiosk%20Video%20Compact%20Flash%20%28Extracted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Mario%20no%20Photopi%20SmartMedia
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Misc
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Misc%20%28Manual%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Misc%20%28Wallpaper%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20New%20Nintendo%203DS%20%28Decrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20New%20Nintendo%203DS%20%28Digital%29%20%28Deprecated%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20New%20Nintendo%203DS%20%28Encrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Decrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28CDN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28Deprecated%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28Dev%20ROMs%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28Pre-Install%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%203DS%20%28Encrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%2064%20%28BigEndian%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%2064%20%28ByteSwapped%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%2064DD
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DS%20%28DSvision%20SD%20cards%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DS%20%28Decrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DS%20%28Download%20Play%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DS%20%28Encrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DSi%20%28Decrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DSi%20%28Digital%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DSi%20%28Digital%29%20%28CDN%29%20%28Decrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DSi%20%28Digital%29%20%28CDN%29%20%28Encrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20DSi%20%28Encrypted%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20Entertainment%20System%20%28Headered%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20Entertainment%20System%20%28Headerless%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Nintendo%20GameCube%20%28NPDP%20Carts%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Play-Yan
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Pokemon%20Mini
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Satellaview
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Sufami%20Turbo
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Super%20Nintendo%20Entertainment%20System
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Virtual%20Boy
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Wii%20%28Digital%29%20%28CDN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Wii%20U%20%28Digital%29%20%28CDN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Wii%20U%20%28Digital%29%20%28CDN%29%20%28Dev%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20Wii%20U%20%28Digital%29%20%28CDN%29%20%28Lotcheck%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nintendo%20-%20amiibo
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Nokia%20-%20N-Gage%20%28WIP%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Apple-Bandai%20-%20Pippin
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Atari%20-%20Atari%20Jaguar%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Audio%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20NEC%20-%20PC%20Engine%20CD%20%2B%20TurboGrafx%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Nintendo%20-%20Nintendo%20GameCube
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Panasonic%20-%203DO%20Interactive%20Multiplayer
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Philips%20-%20CD-i
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sega%20-%20Dreamcast
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sega%20-%20Sega%20Mega%20CD%20%2B%20Sega%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sega%20-%20Sega%20Saturn
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sony%20-%20PlayStation
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sony%20-%20PlayStation%202
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Non-Redump%20-%20Sony%20-%20PlayStation%20Portable
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Ouya%20-%20Ouya
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Philips%20-%20Videopac%2B
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/RCA%20-%20Studio%20II
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/SNK%20-%20Neo%20Geo%20Pocket
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/SNK%20-%20Neo%20Geo%20Pocket%20Color
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sanyo%20-%20MBC-550%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%2032X
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20Beena
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20Game%20Gear
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20Master%20System%20-%20Mark%20III
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20Mega%20Drive%20-%20Genesis
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20PICO
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sega%20-%20SG-1000
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Seta%20-%20Aleck64%20%28BigEndian%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Seta%20-%20Aleck64%20%28ByteSwapped%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sharp%20-%20MZ-2200%20%28Waveform%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sharp%20-%20MZ-700%20%28Waveform%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sharp%20-%20X1%20%28Waveform%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sharp%20-%20X68000%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sinclair%20-%20ZX%20Spectrum%20%2B3
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%20%28PS%20one%20Classics%29%20%28PSN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%203%20%28PSN%29%20%28Content%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%203%20%28PSN%29%20%28Updates%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%20Mobile%20%28PSN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%20Portable%20%28PSN%29%20%28Encrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%20Vita%20%28PSN%29%20%28Content%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Sony%20-%20PlayStation%20Vita%20%28PSN%29%20%28Updates%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Apple%20-%20II
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Apple%20-%20IIGS
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Atari%20-%202600
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Atari%20-%208-bit%20Family
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20IBM%20-%20PC%20and%20Compatibles
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Mobile%20-%20Palm%20OS
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Game%20Boy%20Advance
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Nintendo%20-%20Game%20Boy%20Color
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Nintendo%20DS
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Nintendo%20Entertainment%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Nintendo%20GameCube
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Nintendo%20-%20Super%20Nintendo%20Entertainment%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20VM%20Labs%20-%20NUON
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Source%20Code%20-%20Various
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/TeleNova%20-%20Compis%20%28Flux%29
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Texas%20Instruments%20-%20TI-99-4A%20%28A2R%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Tiger%20-%20Game.com
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Toshiba%20-%20Pasopia%20%28BIN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Toshiba%20-%20Pasopia%20%28WAV%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Toshiba%20-%20Visicom
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Microsoft%20-%20Xbox%20360%20%28Title%20Updates%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28Updates%20and%20DLC%29%20%28Decrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Nintendo%20-%20Nintendo%203DS%20%28Digital%29%20%28Updates%20and%20DLC%29%20%28Encrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Nintendo%20-%20Wii%20%28Digital%29%20%28Deprecated%29%20%28WAD%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Nintendo%20-%20Wii%20%28Digital%29%20%28Split%20DLC%29%20%28Deprecated%29%20%28WAD%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Nintendo%20-%20Wii%20U%20%28Digital%29%20%28Deprecated%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%203%20%28PSN%29%20%28Decrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Portable%20%28PSN%29%20%28Decrypted%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Portable%20%28PSX2PSP%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Portable%20%28UMD%20Music%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Portable%20%28UMD%20Video%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Vita%20%28BlackFinPSV%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Vita%20%28NoNpDrm%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Vita%20%28PSN%29%20%28Decrypted%29%20%28VPK%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Vita%20%28PSVgameSD%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Unofficial%20-%20Sony%20-%20PlayStation%20Vita%20%28VPK%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/VM%20Labs%20-%20NUON%20%28Digital%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/VTech%20-%20CreatiVision
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/VTech%20-%20V.Smile
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Watara%20-%20Supervision
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Welback%20-%20Mega%20Duck
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Yamaha%20-%20Copera
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/Zeebo%20-%20Zeebo
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/iQue%20-%20iQue%20%28CDN%29
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/No-Intro/iQue%20-%20iQue%20%28Decrypted%29
-
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Acorn%20-%20Archimedes
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Apple%20-%20Macintosh
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Apple%20-%20Macintosh%20-%20SBI%20Subchannels
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Hasbro%20-%20VideoNow
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Hasbro%20-%20VideoNow%20Color
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Hasbro%20-%20VideoNow%20Jr
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Hasbro%20-%20VideoNow%20XP
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Konami%20-%20FireBeat
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Konami%20-%20M2
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Konami%20-%20System%20573
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Konami%20-%20System%20GV
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Konami%20-%20e-Amusement
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Namco%20-%20Sega%20-%20Nintendo%20-%20Triforce
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Namco%20-%20Sega%20-%20Nintendo%20-%20Triforce%20-%20GDI%20Files
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Namco%20-%20System%20246
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Chihiro
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Chihiro%20-%20GDI%20Files
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Lindbergh
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Naomi
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Naomi%20-%20GDI%20Files
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Naomi%202
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20Naomi%202%20-%20GDI%20Files
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20RingEdge
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Arcade%20-%20Sega%20-%20RingEdge%202
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Atari%20-%20Jaguar%20CD%20Interactive%20Multimedia%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Audio%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/BD-Video
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Bandai%20-%20Pippin
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Bandai%20-%20Playdia%20Quick%20Interactive%20System
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Commodore%20-%20Amiga%20CD
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Commodore%20-%20Amiga%20CD32
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Commodore%20-%20Amiga%20CDTV
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Fujitsu%20-%20FM-Towns
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/HD%20DVD-Video
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/IBM%20-%20PC%20compatible
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/IBM%20-%20PC%20compatible%20-%20SBI%20Subchannels
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Incredible%20Technologies%20-%20Eagle
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Mattel%20-%20Fisher-Price%20iXL
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Mattel%20-%20HyperScan
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Memorex%20-%20Visual%20Information%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Microsoft%20-%20Xbox
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Microsoft%20-%20Xbox%20-%20BIOS%20Images
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Microsoft%20-%20Xbox%20360
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/NEC%20-%20PC%20Engine%20CD%20%26%20TurboGrafx%20CD
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/NEC%20-%20PC-88%20series
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/NEC%20-%20PC-98%20series
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/NEC%20-%20PC-FX%20%26%20PC-FXGA
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Navisoft%20-%20Naviken%202.1
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Nintendo%20-%20GameCube%20-%20BIOS%20Images
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Nintendo%20-%20GameCube%20-%20NKit%20RVZ%20%5Bzstd-19-128k%5D
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Nintendo%20-%20Wii%20-%20NKit%20RVZ%20%5Bzstd-19-128k%5D
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Nintendo%20-%20Wii%20U%20-%20Disc%20Keys
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Nintendo%20-%20Wii%20U%20-%20WUX
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Palm
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Panasonic%20-%203DO%20Interactive%20Multiplayer
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Panasonic%20-%20M2
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Philips%20-%20CD-i
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Photo%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/PlayStation%20GameShark%20Updates
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Pocket%20PC
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/SNK%20-%20Neo%20Geo%20CD
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sega%20-%20Dreamcast
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sega%20-%20Dreamcast%20-%20GDI%20Files
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sega%20-%20Mega%20CD%20%26%20Sega%20CD
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sega%20-%20Prologue%2021
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sega%20-%20Saturn
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sharp%20-%20X68000
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%20-%20BIOS%20Images
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%20-%20SBI%20Subchannels
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%202
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%202%20-%20BIOS%20Images
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%203
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%203%20-%20Disc%20Keys
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%203%20-%20Disc%20Keys%20TXT
-wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Sony%20-%20PlayStation%20Portable
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/TAB-Austria%20-%20Quizard
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Tao%20-%20iKTV
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Tomy%20-%20Kiss-Site
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/VM%20Labs%20-%20NUON
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/VTech%20-%20V.Flash%20%26%20V.Smile%20Pro
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/Video%20CD
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/ZAPiT%20Games%20-%20Game%20Wave%20Family%20Entertainment%20System
-# wget -m -np -c -e robots=off -R "index.html*" https://myrient.erista.me/Redump/funworld%20-%20Photo%20Play
